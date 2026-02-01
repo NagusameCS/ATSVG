@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATSVG - All To SVG Converter</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>
+                <span class="logo">⚡</span>
+                ATSVG
+                <span class="subtitle">All To SVG</span>
+            </h1>
+            <p class="tagline">Convert any visual file to SVG - 100% Local, 100% Private</p>
+        </header>
+
+        <main>
+            <!-- Drop Zone -->
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-zone-content">
+                    <div class="drop-icon">📁</div>
+                    <h2>Drop your file here</h2>
+                    <p>or click to browse</p>
+                    <input type="file" id="fileInput" accept="image/*,.pdf,.docx,.doc,.pptx,.ppt" multiple>
+                    <div class="supported-formats">
+                        <span>PNG</span>
+                        <span>JPEG</span>
+                        <span>WebP</span>
+                        <span>GIF</span>
+                        <span>BMP</span>
+                        <span>TIFF</span>
+                        <span>PDF</span>
+                        <span>DOCX</span>
+                        <span>PPTX</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="settings-panel" id="settingsPanel">
+                <div class="settings-header">
+                    <h3>⚙️ Conversion Settings</h3>
+                    <button class="toggle-settings" id="toggleSettings">▼</button>
+                </div>
+                
+                <div class="settings-content" id="settingsContent">
+                    <!-- Conversion Mode -->
+                    <div class="setting-group">
+                        <label>Conversion Mode</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="conversionMode" value="embed" checked>
+                                <span class="radio-label">
+                                    <strong>Embed</strong>
+                                    <small>Preserve original quality, larger file size</small>
+                                </span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="conversionMode" value="trace">
+                                <span class="radio-label">
+                                    <strong>Trace (Vectorize)</strong>
+                                    <small>Convert to true vector paths, smaller size</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Tracing Options -->
+                    <div class="setting-group trace-options" id="traceOptions">
+                        <label>Tracing Options</label>
+                        
+                        <div class="setting-row">
+                            <label for="traceMode">Trace Mode</label>
+                            <select id="traceMode">
+                                <option value="color">Color (Full Color)</option>
+                                <option value="grayscale">Grayscale</option>
+                                <option value="monochrome">Monochrome (Black & White)</option>
+                                <option value="posterize">Posterize</option>
+                            </select>
+                        </div>
+
+                        <div class="setting-row">
+                            <label for="colorCount">Color Count: <span id="colorCountValue">16</span></label>
+                            <input type="range" id="colorCount" min="2" max="64" value="16">
+                        </div>
+
+                        <div class="setting-row">
+                            <label for="threshold">Threshold: <span id="thresholdValue">128</span></label>
+                            <input type="range" id="threshold" min="0" max="255" value="128">
+                        </div>
+
+                        <div class="setting-row">
+                            <label for="blurRadius">Blur Radius: <span id="blurRadiusValue">0</span></label>
+                            <input type="range" id="blurRadius" min="0" max="10" value="0">
+                        </div>
+
+                        <div class="setting-row">
+                            <label for="pathSimplify">Path Simplification: <span id="pathSimplifyValue">1</span></label>
+                            <input type="range" id="pathSimplify" min="0" max="5" value="1" step="0.1">
+                        </div>
+                    </div>
+
+                    <!-- Background Options -->
+                    <div class="setting-group">
+                        <label>Background</label>
+                        <div class="setting-row">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="transparentBg" checked>
+                                <span>Transparent Background</span>
+                            </label>
+                        </div>
+                        <div class="setting-row" id="bgColorRow">
+                            <label for="bgColor">Background Color</label>
+                            <input type="color" id="bgColor" value="#ffffff">
+                        </div>
+                        <div class="setting-row">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="removeWhiteBg">
+                                <span>Remove White Background</span>
+                            </label>
+                        </div>
+                        <div class="setting-row" id="whiteTolerance" style="display: none;">
+                            <label for="whiteToleranceValue">White Tolerance: <span id="whiteToleranceDisplay">20</span></label>
+                            <input type="range" id="whiteToleranceValue" min="0" max="100" value="20">
+                        </div>
+                    </div>
+
+                    <!-- Size Options -->
+                    <div class="setting-group">
+                        <label>Output Size</label>
+                        <div class="setting-row">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="customSize">
+                                <span>Custom Size</span>
+                            </label>
+                        </div>
+                        <div class="size-inputs" id="sizeInputs" style="display: none;">
+                            <div class="setting-row">
+                                <label for="outputWidth">Width</label>
+                                <input type="number" id="outputWidth" placeholder="Auto">
+                            </div>
+                            <div class="setting-row">
+                                <label for="outputHeight">Height</label>
+                                <input type="number" id="outputHeight" placeholder="Auto">
+                            </div>
+                            <div class="setting-row">
+                                <label class="checkbox-option">
+                                    <input type="checkbox" id="maintainAspect" checked>
+                                    <span>Maintain Aspect Ratio</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label for="scale">Scale: <span id="scaleValue">100</span>%</label>
+                            <input type="range" id="scale" min="10" max="400" value="100">
+                        </div>
+                    </div>
+
+                    <!-- Quality Options -->
+                    <div class="setting-group embed-options" id="embedOptions">
+                        <label>Embed Quality</label>
+                        <div class="setting-row">
+                            <label for="imageFormat">Image Format</label>
+                            <select id="imageFormat">
+                                <option value="png">PNG (Lossless)</option>
+                                <option value="jpeg">JPEG (Smaller)</option>
+                                <option value="webp">WebP (Best)</option>
+                            </select>
+                        </div>
+                        <div class="setting-row" id="jpegQualityRow">
+                            <label for="jpegQuality">Quality: <span id="jpegQualityValue">92</span>%</label>
+                            <input type="range" id="jpegQuality" min="10" max="100" value="92">
+                        </div>
+                    </div>
+
+                    <!-- PDF/Document Options -->
+                    <div class="setting-group doc-options" id="docOptions" style="display: none;">
+                        <label>Document Options</label>
+                        <div class="setting-row">
+                            <label for="pdfPage">Page Number</label>
+                            <input type="number" id="pdfPage" min="1" value="1">
+                        </div>
+                        <div class="setting-row">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="allPages">
+                                <span>Convert All Pages</span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <label for="pdfScale">PDF Scale: <span id="pdfScaleValue">2</span>x</label>
+                            <input type="range" id="pdfScale" min="1" max="4" value="2" step="0.5">
+                        </div>
+                    </div>
+
+                    <!-- Advanced Options -->
+                    <div class="setting-group">
+                        <label>Advanced</label>
+                        <div class="setting-row">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="optimizeSvg" checked>
+                                <span>Optimize SVG Output</span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="preserveMetadata">
+                                <span>Preserve Metadata</span>
+                            </label>
+                        </div>
+                        <div class="setting-row">
+                            <label class="checkbox-option">
+                                <input type="checkbox" id="addViewBox" checked>
+                                <span>Add ViewBox</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preview Area -->
+            <div class="preview-area" id="previewArea" style="display: none;">
+                <div class="preview-header">
+                    <h3>📸 Preview</h3>
+                    <div class="preview-tabs">
+                        <button class="tab-btn active" data-tab="original">Original</button>
+                        <button class="tab-btn" data-tab="converted">Converted</button>
+                        <button class="tab-btn" data-tab="split">Split View</button>
+                    </div>
+                </div>
+                <div class="preview-content">
+                    <div class="preview-container" id="previewContainer">
+                        <div class="original-preview" id="originalPreview">
+                            <img id="originalImage" alt="Original">
+                            <div class="preview-label">Original</div>
+                        </div>
+                        <div class="converted-preview" id="convertedPreview">
+                            <div id="svgOutput"></div>
+                            <div class="preview-label">SVG</div>
+                        </div>
+                    </div>
+                    <div class="preview-info" id="previewInfo">
+                        <div class="info-item">
+                            <span class="info-label">Original Size:</span>
+                            <span class="info-value" id="originalSize">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">SVG Size:</span>
+                            <span class="info-value" id="svgSize">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Dimensions:</span>
+                            <span class="info-value" id="dimensions">-</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="preview-actions">
+                    <button class="btn btn-secondary" id="copyBtn">📋 Copy SVG</button>
+                    <button class="btn btn-secondary" id="copySvgCodeBtn">📝 Copy Code</button>
+                    <button class="btn btn-primary" id="downloadBtn">⬇️ Download SVG</button>
+                    <button class="btn btn-secondary" id="downloadAllBtn" style="display: none;">⬇️ Download All</button>
+                </div>
+            </div>
+
+            <!-- Batch Processing -->
+            <div class="batch-area" id="batchArea" style="display: none;">
+                <div class="batch-header">
+                    <h3>📦 Batch Processing</h3>
+                    <span class="batch-count" id="batchCount">0 files</span>
+                </div>
+                <div class="batch-list" id="batchList"></div>
+                <div class="batch-actions">
+                    <button class="btn btn-primary" id="convertAllBtn">Convert All</button>
+                    <button class="btn btn-secondary" id="clearBatchBtn">Clear All</button>
+                </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="progress-area" id="progressArea" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Converting...</div>
+            </div>
+        </main>
+
+        <footer>
+            <p>ATSVG - All conversions happen locally in your browser. No data is uploaded.</p>
+            <p class="footer-links">
+                <a href="https://github.com/NagusameCS/ATSVG" target="_blank">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://unpkg.com/mammoth@1.6.0/mammoth.browser.min.js"></script>
+    <script src="js/imagetrace.js"></script>
+    <script src="js/converter.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

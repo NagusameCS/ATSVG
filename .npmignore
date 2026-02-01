@@ -1,0 +1,29 @@
+# Development files
+.git/
+.github/
+test/
+*.test.js
+
+# Web app files (not needed for npm package)
+index.html
+css/
+js/app.js
+js/converter.js
+js/imagetrace.js
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+*.tmp
+coverage/
+.nyc_output/

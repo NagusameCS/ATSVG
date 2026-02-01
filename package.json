@@ -1,0 +1,70 @@
+{
+  "name": "atsvg",
+  "version": "1.0.0",
+  "description": "All-To-SVG: Convert any visual file type (PNG, JPEG, WebP, PDF, DOCX, etc.) to SVG with extensive customization options",
+  "main": "lib/index.js",
+  "bin": {
+    "atsvg": "./bin/cli.js"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./lib/index.cjs"
+    }
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "build": "echo 'No build step required'",
+    "lint": "eslint lib/ bin/",
+    "prepublishOnly": "npm test"
+  },
+  "keywords": [
+    "svg",
+    "converter",
+    "image",
+    "png",
+    "jpeg",
+    "webp",
+    "pdf",
+    "docx",
+    "vectorize",
+    "trace",
+    "cli",
+    "image-processing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NagusameCS/ATSVG.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NagusameCS/ATSVG/issues"
+  },
+  "homepage": "https://nagusumecs.github.io/ATSVG",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "glob": "^10.3.10",
+    "mammoth": "^1.6.0",
+    "ora": "^8.0.1",
+    "picocolors": "^1.0.0",
+    "sharp": "^0.33.2",
+    "svg-pathdata": "^6.0.3"
+  },
+  "optionalDependencies": {
+    "pdfjs-dist": "^4.0.379"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0"
+  }
+}
